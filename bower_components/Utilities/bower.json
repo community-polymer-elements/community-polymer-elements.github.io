@@ -1,0 +1,37 @@
+{
+  "name": "Utilities",
+  "version": "1.0.0",
+  "homepage": "https://github.com/marcus7777/utilities",
+  "authors": [
+    "The Polymer community"
+  ],
+  "description": "utilities",
+  "keywords": [
+    "web-components",
+    "polymer"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "flip-clock": "Granze/flip-clock#master",
+    "star-rating":"cmartinezv/star-rating#master",
+    "sc-timeago":"safetychanger/sc-timeago#master",
+    "qr-code":"marcus7777/qr-code#master",
+    "cosmoz-page-router":"Neovici/cosmoz-page-router#master",
+    "app-globals":"marcus7777/app-globals#master",
+    "x-tweet":"ajaythomas123/x-tweet#master",
+    "sc-carousel":"safetychanger/sc-carousel#master",
+    "sc-upload":"safetychanger/sc-upload#master",
+    "lazy-pages":"atotic/lazy-pages#master",
+    "excess-router":"atotic/excess-router",
+    "markdown-edit":"marcus7777/markdown-edit",
+    "html-edit":"marcus7777/html-edit",
+    "webcomponents-update-reminder":"markhuang1212/webcomponents-update-reminder",
+    "icon-pick":"marcus7777/icon-pick"
+  }
+}

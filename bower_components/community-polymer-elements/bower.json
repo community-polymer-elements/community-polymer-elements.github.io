@@ -1,0 +1,27 @@
+{
+  "name": "community-polymer-elements",
+  "version": "1.0.0",
+  "homepage": "https://github.com/community-polymer-elements/community-polymer-elements.git",
+  "authors": [
+    "mibamur",
+    "marcus7777"
+  ],
+  "description": "community-polymer-elements - More of these coming soon!",
+  "main": "community-polymer-elements.html",
+  "keywords": [
+    "web-components",
+    "polymer"
+  ],
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chart-elements": "robdodson/chart-elements#master",
+    "disqus-comments": "mibamur/disqus-comments#master"
+  }
+}

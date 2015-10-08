@@ -1,0 +1,82 @@
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<!--
+`<laterooms-ratepicker hotelid="73022" affiliateid="3095">` This is a Polymer Element that pulls in rates from Laterooms API. It is still a work in progress and what is here is pre production.
+@demo demo.html
+-->
+
+
+<dom-module id="laterooms-ratepicker">
+  <template>
+    <style>
+      paper-input {
+        margin: 20px;
+      }
+    </style>
+      <iron-ajax auto url="{{_url}}" last-response="{{data}}"></iron-ajax>
+      <div class="layout center">
+        <paper-material style="max-width: 500px">
+          <div class="layout horizontal">
+            <paper-input type="number" class="flex" value="{{day}}" label="day"></paper-input>
+            <paper-input type="number" class="flex" value="{{month}}" label="month"></paper-input>
+            <paper-input type="number" class="flex" value="{{year}}" label="year"></paper-input>
+            <paper-input type="number" class="flex" value="{{nights}}" label="nights"></paper-input>
+          </div>
+        </paper-material>
+        <a style="text-decoration:none;color:#222" href="{{_link}}">
+          <paper-material class="layout middle" style="max-width: 300px;">
+            <div style="margin:40px 40px;text-align:center;padding: 20px">
+              Laterooms Rate From
+              <p>{{rate}}</p>
+            </div>
+          </paper-material>
+        </a>
+      </div>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: "laterooms-ratepicker",
+    properties: {
+      day:{value:23},
+      month:{value:2},
+      year:{value:2016},
+      nights:{value:2},
+      hotelid:{value:73022},
+      affiliateid:{value:3095},
+      _url: {computed:'getUrl(day,month,year,nights,hotelid,affiliateid)'},
+      _link: {computed:'getLink(day,month,year,nights,hotelid,affiliateid)'},
+      rate: {computed:'getRate(data)'}
+    },
+    getUrl: function(day, month, year, nights, hotelid, affiliateid) {
+      return "http://46.101.40.191/?u=%3Faid%3D"+affiliateid+"%26rtype%3D7%26hids%3D"+hotelid+"%26sdate%3D"+year+"-"+month+"-"+day+"%26nights%3D"+nights;
+    },
+    getLink: function(day,month,year,nights,hotelid,affiliateid) {
+      if ((""+day).length == 1) day = "0" + day;
+      if ((""+month).length == 1) month = "0" + month;
+      
+      return "http://www.laterooms.com/en/p"+affiliateid+
+        "/hotel-reservations/"+hotelid+".aspx?d="+year+month+day+
+        "&n="+nights+"&rt=2-0&adult=2&child=0";
+      // working link http://www.laterooms.com/en/p3095/hotel-reservations/73022.aspx?d=20151201&n=4&rt=2-0&adult=2&child=0
+    },
+    getRate: function(data){
+      var rates = [];
+      for (var index = 0; index < data.lr_rates.hotel.hotel_rooms.room.length; ++index) {
+        var room = 0
+        for (var indexRate = 0; indexRate < data.lr_rates.hotel.hotel_rooms.room[index].rate.length; ++indexRate) {
+          room = room + (data.lr_rates.hotel.hotel_rooms.room[index].rate[indexRate].price.replace('£','')*1)
+        }
+        rates.push(room);
+        // TODO 1 night fixed
+      }
+      if (rates.sort()[rates.length-1] > 1) {
+        return '£' + rates.sort()[rates.length-1].toFixed(2);
+      } else {
+        return 'No rates available';
+      }
+    }
+  });
+</script>

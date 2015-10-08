@@ -1,0 +1,29 @@
+{
+  "name": "sc-thumbnail",
+  "version": "1.0.0",
+  "description": "Polymer 1.0 element for showing a thumbnail or loader while the image is loading",
+  "authors": [
+    "Safety Changer"
+  ],
+  "keywords": [
+    "web-components",
+    "web-component",
+    "polymer",
+    "image",
+    "thumbnail",
+    "loading",
+    "onload"
+  ],
+  "main": "sc-thumbnail.html",
+  "ignore": {},
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/safetychanger/sc-thumbnail"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/safetychanger/sc-thumbnail",
+  "dependencies": {
+    "polymer": "~1.0.6"
+  }
+}

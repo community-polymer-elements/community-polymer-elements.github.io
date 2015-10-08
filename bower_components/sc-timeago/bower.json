@@ -1,0 +1,31 @@
+{
+  "name": "sc-timeago",
+  "version": "1.0.0",
+  "description": "Polymer 1.0 element that shows a date/time as 'some time ago' using moment.js",
+  "authors": [
+    "Safety Changer"
+  ],
+  "keywords": [
+    "web-components",
+    "web-component",
+    "polymer",
+    "timeago",
+    "time",
+    "date",
+    "moment",
+    "momentjs"
+  ],
+  "main": "sc-timeago.html",
+  "ignore": {},
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/safetychanger/sc-timeago"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/safetychanger/sc-timeago",
+  "dependencies": {
+    "polymer": "~1.0.6",
+    "moment": "latest"
+  }
+}

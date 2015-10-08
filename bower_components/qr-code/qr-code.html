@@ -1,0 +1,80 @@
+<link rel="import" href="../polymer/polymer.html">
+<script src="qrcode.js"></script>
+<!--
+A flip clock, timer and countdown made with Polymer
+    inputs
+      t TypeNumber 1 40 
+      e ErrorCorrectLevel L M Q H 
+      value or link
+    
+##### Examples
+    <qr-code href="sqrl://i.cx/user/api.php?sqrl=ci57JCuM4n4sHddI4I17GA" >
+    <qr-code typeNumber=6 ErrorCorrectLevel="H" href="litecoin://LfM1CYmEaCqhQHWiAKHnbprR2FDgse9nSa?amount=2" >
+    <qr-code href="https://github.com/marcus7777" >
+    
+@demo
+@element qr-code
+-->
+
+<dom-module id="qr-code">
+  <template>
+    <div id="qr"></div>
+  </template>
+  <script>
+    Polymer({
+      is: 'qr-code',
+      properties: {
+        /** L M Q H */
+        errorCorrectLevel: {
+          type:String
+        },
+        /** When it is linked it*/
+        href: {
+          type: String,
+          observer: 'hrefChanged'
+        },
+        /** TypeNumber 1 40 */
+        typeNumber: {
+          type:Number
+        },
+        /** Use this if not linked */
+        value: {
+          type: String,
+          observer: 'valueChanged'
+        }
+      },
+      ready: function () {
+        this.update_qrcode();
+      },
+      hrefChanged: function () {
+        this.update_qrcode();
+      },
+      valueChanged: function () {
+        this.update_qrcode();
+      },
+      draw_qrcode: function (text, typeNumber, errorCorrectLevel) {
+        document.write(this.create_qrcode(text, typeNumber, errorCorrectLevel));
+      },
+      create_qrcode: function (text, typeNumber, errorCorrectLevel, table) {
+        var qr = qrcode(typeNumber || 4, errorCorrectLevel || 'M');
+        qr.addData(text);
+        qr.make();
+        //return qr.createTableTag();
+        return qr.createImgTag();
+      },
+      update_qrcode: function () {
+        if (this.value) {
+          var text = this.value.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+          var t = this.typeNumber;
+          var e = this.errorCorrectLevel;
+          this.$.qr.innerHTML = this.create_qrcode(text, t, e);
+        } else if (this.href) {
+          var text = this.href.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+          var t = this.typeNumber;
+          var e = this.errorCorrectLevel;
+          this.$.qr.innerHTML = '<a href=\'' + text + '\' >' + this.create_qrcode(text, t, e) + '</a>';
+        }
+      }
+    });
+  </script>
+</dom-module>

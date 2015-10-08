@@ -1,0 +1,22 @@
+{
+  "name": "development",
+  "homepage": "https://github.com/marcus7777/development",
+  "description": "development tools",
+  "keywords": [
+    "web-components",
+    "polymer",
+    "dev tools"
+  ],
+  "dependencies": {
+    "pair-production": "marcus7777/pair-production",
+    "edit-in-jsbin":"marcus7777/edit-in-jsbin",
+    "github-issues":"tonyedwardspz/github-issues",
+    "commonmark-editor":"duongphuhiep/commonmark-editor",
+    "juicy-ace-editor":"Juicy/juicy-ace-editor",
+    "commits-element":"charbelrami/commits-element",
+    "laterooms-ratepicker":"HackITtoday/laterooms-ratepicker",
+    "poly-theme-builder":"robrez/poly-theme-builder",
+    "iron-test-helpers":"PolymerElements/iron-test-helpers",
+    "mediator-data":"marcus7777/mediator-data"
+  }
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <title>markdown-edit</title>
+    <script src="../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../test-fixture/test-fixture-mocha.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+    <link rel="import" href="../../test-fixture/test-fixture.html">
+    <link rel="import" href="../markdown-edit.html">
+  </head>
+  <body>
+    <test-fixture id="markdownEdit">
+      <template>
+        <markdown-edit value="# 12"></markdown-edit>
+      </template>
+    </test-fixture>
+    <script>
+      suite('<markdown-edit>', function (global) {
+        var markdownEdit = fixture('markdownEdit');
+        suite('basic usage', function (global) {
+          test('can be triggered with space', function(done) {
+            markdownEdit.addEventListener('keydown', function() {
+              done();
+            });
+            MockInteractions.pressSpace(markdownEdit);
+          });
+          test('with # 12 get h1 in dom', function(done) {
+            MockInteractions.blur(markdownEdit);
+            if (markdownEdit.$$('marked-element').$$('div h1').innerText == 12) {
+              done();
+            }
+          });
+          test('can be clicked', function(done) {
+            markdownEdit.addEventListener('click', function() {
+              done();
+            });
+            MockInteractions.tap(markdownEdit);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <title>laterooms-ratepicker</title>
+    <script src="../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../test-fixture/test-fixture-mocha.js"></script>
+    <link rel="import" href="../../polymer/polymer.html">
+
+    <link rel="import" href="../../test-fixture/test-fixture.html">
+    <link rel="import" href="../laterooms-ratepicker.html">
+  </head>
+  <body>
+    <test-fixture id="lateroomsRatepicker">
+
+      <template>
+        <laterooms-ratepicker></laterooms-ratepicker>
+      </template>
+    </test-fixture>
+    <script>
+      suite('<laterooms-ratepicker>', function () {
+        var lateroomsRatepicker;
+        lateroomsRatepicker = fixture('lateroomsRatepicker');
+
+        suite('basic usage', function () {
+          test('can be triggered with space', function(done) {
+            lateroomsRatepicker.addEventListener('keydown', function() {
+              done();
+            });
+          });
+          test('can be clicked', function(done) {
+            lateroomsRatepicker.addEventListener('click', function() {
+              done();
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

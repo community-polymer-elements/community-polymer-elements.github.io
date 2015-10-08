@@ -1,0 +1,18 @@
+{
+  "name": "edit-in-jsbin",
+  "version": "1.0.0",
+  "homepage": "https://github.com/marcus7777/edit-in-jsbin",
+  "authors": [
+    "Marcus Hitchins <Marcus7777@gmail.com>"
+  ],
+  "description": "link to edit in jsbin",
+  "main": "edit-in-jsbin.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

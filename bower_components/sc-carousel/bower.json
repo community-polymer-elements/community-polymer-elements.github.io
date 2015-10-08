@@ -1,0 +1,32 @@
+{
+  "name": "sc-carousel",
+  "version": "1.0.0",
+  "description": "Polymer 1.0 element that renders media elements as a carousel/slider",
+  "authors": [
+    "Safety Changer"
+  ],
+  "keywords": [
+    "web-components",
+    "web-component",
+    "polymer",
+    "link",
+    "href",
+    "carousel",
+    "media",
+    "slider",
+    "swipe",
+    "animation"
+  ],
+  "main": "sc-carousel.html",
+  "ignore": {},
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/safetychanger/sc-carousel"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/safetychanger/sc-carousel",
+  "dependencies": {
+    "polymer": "latest"
+  }
+}

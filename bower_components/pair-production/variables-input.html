@@ -1,0 +1,78 @@
+<!--
+`<variables-input>` 
+-->
+
+<dom-module id="variables-input">
+  <template>
+    <div style="padding:20px"> <h3>{{label}}</h3>
+      <input-save path="{{cat('variables.',label)}}" label="{{cat('Variables for ',label)}}" value="{{variables}}" pattern="[a-zA-Z ]*[a-zA-Z \,]*[a-zA-Z ]+" auto-validate  error-message="a ',' separated list " changed="{{changed}}"></input-save>
+      <template is="dom-repeat" items="{{variableList}}">
+        <div style="padding:20px"> <h4>{{item}}</h4>
+          <input-save path="{{cat('variable.',label,'.',item,'.about')}}" label="{{cat('Tell me about ',item)}}" changed="{{changed}}"></input-save>
+          <input-save path="{{cat('variable.',label,'.',item,'.type')}}" value="{{type}}" options-input changed="{{changed}}"></input-save>
+          <input-save label="{{cat('default for ',item)}}" pattern$="{{getRepType('variable.',label,'.',item,'.type',data)}}" auto-validate path="{{cat('variable.',label,'.',item,'.default')}}" error-message="{{cat('needs to be a ',type,' so ', repType)}}" changed="{{changed}}"></input-save>
+          <template is="dom-if" if="{{computed}}">
+            <input-save label="{{cat(item,' is computed by :')}}" auto-validate path="{{cat('variable.',label,'.',item,'.computed')}}" pattern="{{reFunctionsAndVariables}}" error-message="{{cat('needs to a function (', functions , ') with input(s)')}}" changed="{{changed}}"></input-save>
+          </template>
+          <input-save label="{{cat('observer ',item)}}" auto-validate path="{{cat('variable.',label,'.',item,'.observer')}}" pattern="{{reFunctions}}" error-message="{{cat('needs to a function (', functions , ') add to \'functions'\' if needed)}}" changed="{{changed}}"></input-save>
+        </div>
+      </template>
+    </div>
+    <iron-localstorage name="pair-production" value="{{data}}"></iron-localstorage>
+  </template>
+</dom-module> 
+<script>
+    Polymer({
+      is: 'variables-input',
+      properties:{
+        label:String,
+        changed: {type:Boolean,notify:true,value:false},
+        variables: {type:String,notify:true},
+        type:String,
+        variableList: {computed:"getArray(variables)"},
+        computed: {computed:"notInput(label)"},
+        functions:{type:String},
+        reFunctions: {computed:"getReFunctions(functions)"},
+        reFunctionsAndVariables: {computed:"getReFunctionsAndVariables(reFunctions)"}
+      },
+      notInput: function(label) {
+        return label !== "Inputs"
+      },
+      cat : function(a,b,c,d,e,f) {
+        console.log(a,b,c,d,e,f);
+        if (c === undefined) {
+          return a+b;
+        } else if (d === undefined) {
+          return a+b+c;
+        } else if (e === undefined) {
+          return a+b+c+d;
+        } else if (f === undefined) {
+          return a+b+c+d+e;
+        } else {
+          return a+b+c+d+e+f;
+        }
+      },
+      getArray:  function(s) {
+        if (s !== "") return toCamelCase(s).split(',');
+      },
+      getRepType: function(a,b,c,d,e,data) {
+        var t = data[a+b+c+d+e];
+
+        console.log("t",t);
+        
+        switch(t) {
+           // TODO Symbol Functions
+          case 'Null': return 'null';break;
+          case 'Array': return '^\\[.*\\]$';break;
+          case 'Boolean': return '(true|false)';break;
+          case 'Number': return '^[0-9\.]*$';break;
+          case 'Object': return '^\{.*\}$';break;
+          case 'String': return '^\".*\"$';break;
+          default: return '';break;
+        }
+
+      },
+      getReFunctions: function(functions){return '(' + functions.replace(/,/g, '|') + ')';},
+      getReFunctionsAndVariables: function(reFunctions) {return reFunctions+'\\([a-zA-Z]*[a-zA-Z\,]*[a-zA-Z]+\\)'}
+    });
+</script>

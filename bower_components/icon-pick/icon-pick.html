@@ -1,0 +1,49 @@
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../icon-icons/iron-icons.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<!--
+`<icon-pick>` Sets a icon from a array of arrays
+@demo demo.html
+-->
+
+<dom-module id="icon-pick">
+  <template>
+    <paper-dialog>
+      <template is="dom-repeat" items="{{iconLists}}">
+        <template is="dom-repeat" items="{{item}}">
+          <paper-icon-button on-tap="_setIcon" icon="{{item}}" title="{{item}}">
+          </paper-icon-button>
+        </template><br>
+      </template>
+    </paper-dialog>
+    <paper-icon-button on-tap="_editIcon" icon="{{value}}"></paper-icon-button>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'icon-pick',
+    properties: {
+      iconLists:{type: Array, value: 
+        [
+          ["android","book","shopping-cart","build","check"],
+          ["face","favorite","grade","note-add","language"],
+          ["help","gesture","bug-report","attachment","assignment-return"],
+          ["accessibility","account-balance","drafts","account-circle","backspace"],
+          ["autorenew","block","card-travel","change-history","content-paste"]
+        ] 
+      },
+      value:{
+        value:"add",
+        notify:true
+      }
+    },
+    _setIcon: function(e){
+      this.set("value",e.target.icon);
+      this.$$('paper-dialog').close();
+    }, 
+    _editIcon: function() {
+      this.$$('paper-dialog').open();
+    }
+  });
+</script>

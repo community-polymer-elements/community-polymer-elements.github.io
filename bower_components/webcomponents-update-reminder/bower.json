@@ -1,0 +1,34 @@
+{
+  "name": "webcomponents-update-reminder",
+  "version": "0.3.0",
+  "homepage": "https://github.com/markhuang1212/webcomponents-update-reminder",
+  "description": "Remind your user to update your components just by adding one line",
+  "authors": [ "mark.huang1212@gmail.com" ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/markhuang1212/webcomponents-update-reminder.git"
+  },
+  "main": "webcomponents-update-reminder.html",
+  "license": "MIT",
+  "ignore": [],
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "update",
+    "update reminder"
+  ],
+  "dependencies":{
+    "polymer": "Polymer/polymer#^1.1.0",
+    "iron-ajax": "PolymerElements/iron-ajax",
+    "iron-component-page": "PolymerElements/iron-component-page"
+  },
+  "devdependencies": {
+    "polymer": "Polymer/polymer#^1.1.0",
+    "iron-elements": "PolymerElements/iron-elements#^1.0.0",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.1",
+    "platinum-elements": "PolymerElements/platinum-elements#^1.1.0",
+    "neon-elements": "PolymerElements/neon-elements#^1.0.0",
+    "google-url-shortener": "GoogleWebComponents/google-url-shortener"
+  }
+}

@@ -1,0 +1,107 @@
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<link rel="import" href="../catalog-data/catalog-data.html">
+<link rel="import" href="../package-tile/package-tile.html">
+<link rel="import" href="../guide-card/guide-card.html">
+<link rel="import" href="../cart-icon/cart-icon.html">
+
+<dom-module id="page-packages">
+  <link rel="import" type="css" href="page-packages.css">
+  <template>
+    <catalog-data packages="{{packages}}" guides="{{guides}}"></catalog-data>
+    <paper-header-panel mode="seamed" class="fit">
+      <paper-toolbar class="paper-header">
+        <app-logo full class="flex"></app-logo>
+        <app-bar class="horizontal layout center end-justified" query="{{q}}"></app-bar>
+        <cart-icon></cart-icon>
+      </paper-toolbar>
+
+      <div class="content fit">
+        <div class="packages layout horizontal wrap">
+          <template is="dom-repeat" items="[[packages]]">
+            <template is="dom-if" if="{{_isMol(item.name)}}">
+              <h2 style="color: white;">Community Elements</h2>
+              <hr style="color: black; width: 100%;" themed-reverse="" />
+            </template>
+            <a href$="[[_packageLink(item.name)]]" is="app-link" class="package flex-none"><package-tile name$="[[item.name]]"></package-tile></a>
+            <template is="dom-if" if="{{_isMol(item.name)}}">
+              <hr style="color: black; width: 100%;" themed-reverse="" />
+              <h2 style="color: white;">Official Google Polymer Elements</h2>
+              <hr style="color: black; width: 100%;" themed-reverse="" />
+            </template>
+                      </template>
+        </div>
+
+        <div class="packages layout horizontal wrap">
+          <hr style="color: black; width: 100%;" themed-reverse="" />
+          <h3 class="color:white;">Useful Links</h3>
+          <hr style="color: black; width: 100%;" themed-reverse="" />
+          <a href="https://www.materialpalette.com/" class="package flex-none"><package-tile package='{ "version": "material", "symbol": "Mp", "title": "Material Palette", "tagline": "Color Picker", "color": "#FFECB3" }'></package-tile></a>
+
+          <a class="package flex-none" href="https://polymerthemes.com/">
+            <package-tile package='{ "version": "theme", "symbol": "Th", "title": "Polymer Themes", "tagline": "Free Polymer Themes & Templates", "color": "#00BCD4" }'></package-tile>
+          </a>
+          <a class="package flex-none" href="https://customelements.io/">
+            <package-tile package='{ "version": "components", "symbol": "Ci", "title": "Customelements.io", "tagline": "Custom Web-Components catalog", "color": "#FF9800" }'></package-tile>
+          </a>
+
+
+<!--
+          <a class="package flex-none" href="http://robrez.github.io/poly-theme-builder/components/poly-theme-builder/demo/index.html">
+            <package-tile package='{ "version": "theme", "symbol": "Cc", "title": "Components Color", "tagline": "Polymer Theme Builder", "color": "#FF5252" }'></package-tile>
+          </a>
+
+    https://github.com/Polymer/designer.git
+    https://chrome.google.com/webstore/detail/polymer-devtools-extensio/mmpfaamodhhlbadloaibpocmcomledcg
+    https://chrome.google.com/webstore/detail/polymer-ready/aaifiopbmiecbpladpjaoemohhfjcbdk
+-->
+          <hr style="color: black; width: 100%;" themed-reverse="" />
+        </div>
+
+                <div id="guides-container">
+          <h3>Element Guides</h3>
+          <div id="guide-list" class="horizontal layout wrap">
+            <template is="dom-repeat" items="[[guides]]">
+              <a href$="[[_link('guides',item.name)]]" is="app-link"><guide-card guide="[[item.name]]"></guide-card></a>
+            </template>
+            <div id="coming-soon">More guides coming soon, stay tuned!</div>  
+          </div>
+        </div>
+      </div>
+    </paper-header-panel>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'page-packages',
+    enableCustomStyleProperties: true,
+    properties: {
+      q: { type: String, notify: true }
+    },
+    attached: function() {
+      // reset page title since this is the default page
+      this.fire('page-meta', {title: null});
+    },
+    observers: [
+      'search(q)'
+    ],
+    search: function(q) {
+      if (q || this.q) {
+        this.router.go('/browse?q=' + (q || this.q));
+      }
+    },
+    _link: function() {
+      return "/" + Array.prototype.slice.call(arguments).join("/");
+    },
+    _isMol: function(name) { if (name==="community-polymer-elements") { return true; } else { return false; } },
+    _packageLink: function(name) {
+      return "/browse?package=" + name;
+    },
+    guideSelect: function(e) {
+      this.router.go('/guides/' + e.currentTarget.guide);
+    }
+  });
+</script>

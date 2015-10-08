@@ -1,0 +1,33 @@
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<!--
+`<edit-in-jsbin url="http://open-elements.org/bower_components/qr-code/demo/index.html">` link to the great Jsbin 
+@demo demo.html
+-->
+<dom-module id="edit-in-jsbin">
+  <template>
+    <iron-ajax auto url="{{url}}" handle-as="text" last-response="{{_got}}"></iron-ajax>
+    <form target="_blank" action="http://jsbin.com/" method="post">
+      <input type="hidden" name="html" value="{{_code}}" />
+      <input type="image" alt="Edit in JSbin" src="jsbin.svg" />
+    </form>
+  </template>
+</dom-module>
+<script>
+  (function () {
+    Polymer({
+      is: 'edit-in-jsbin',
+      properties: {
+        _got:String,
+        _code: {
+          type: String,
+          computed: "_addBase(_got,url)"
+        },
+        url: String
+      },
+      _addBase: function(got,url) {
+        base = '<base href="' + url.match(/(.*)\//)[0] + '">';     
+        return got.replace('<head>','<head>'+ base);
+      }
+    });
+  })();
+</script>

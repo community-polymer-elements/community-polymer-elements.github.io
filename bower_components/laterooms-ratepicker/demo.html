@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head><base href="http://open-elements.org/bower_components/laterooms-ratepicker/">
+    <title>laterooms-ratepicker demo</title>
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="laterooms-ratepicker.html">
+  </head>
+  <body>
+    <h3>laterooms-ratepicker Demo</h3>
+    <template is="dom-bind">
+      hotelid <input type="number" placeholder="73022" value="{{hotelid}}" />
+      <br /> default :73022 (hotel 41) 
+      <br /> look in laterooms Url for ids
+      <laterooms-ratepicker hotelid="{{hotelid}}" affiliateid="3095"></laterooms-ratepicker>
+    </template>
+    
+  </body>
+</html>

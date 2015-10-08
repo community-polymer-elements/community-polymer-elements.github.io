@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <title>markdown-edit demo</title>
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="markdown-edit.html">
+  </head>
+  <body>
+    <template is="dom-bind">
+      <h3>markdown-edit Demo</h3>
+      <p>Let's you edit markdown and see the result when you move on</p>
+      <markdown-edit label="markdown" value="{{markdown}}"></markdown-edit>
+      <h3>value:</h3>
+      <pre>{{markdown}}</pre>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<dom-module id="variables-list-input">
+  <template>
+    <template is="dom-repeat" items="{{labelList}}" >
+      <variables-input changed="{{changed}}" functions="{{functions}}" label="{{item}}"></variables-input>
+    </template>
+  </template>
+</dom-module> 
+<script>
+  var toCamelCase = function(str){
+    if (typeof str === "string") {
+      return str.replace(/  /g,' ').replace(/, /g,',').replace(/ \S/g, function(txt){return txt.toUpperCase()[1]});
+    } else {
+      return false;
+    }
+  }
+    Polymer({
+      is: 'variables-list-input',
+      properties:{
+        name:  String,
+        changed: {type:Boolean,notify:true,value:false},
+        description: String,
+        label:String,
+        functions : String,
+        labelList:{
+          computed:"getArray(label)"
+        }
+      },      
+      cat : function(a,b,c,d,e,f) {
+        console.log(a,b,c,d,e,f);
+        if (c === undefined) {
+          return a+b;
+        } else if (d === undefined) {
+          return a+b+c;
+        } else if (e === undefined) {
+          return a+b+c+d;
+        } else if (f === undefined) {
+          return a+b+c+d+e;
+        } else {
+          return a+b+c+d+e+f;
+        }
+      },
+      getArray: function(s) {
+        if (s !== "") {
+          return s.split(',');
+        }
+      }
+    });
+</script>

@@ -1,0 +1,24 @@
+{
+  "name": "polymer-third-party",
+  "version": "0.0.1",
+  "homepage": "https://github.com/community-polymer-elements/polymer-third-party",
+  "authors": [
+    "mibamur"
+  ],
+  "description": "Community wrappers for third-party libraries",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "polymer",
+    "third-party",
+    "libraries"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

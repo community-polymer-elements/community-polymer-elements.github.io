@@ -1,0 +1,387 @@
+<link rel="import" href="../prism-element/prism-highlighter.html">
+<link rel="import" href="../marked-element/marked-element.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<link rel="import" href="variables-list-input.html">
+<link rel="import" href="function-list-input.html">
+<link rel="import" href="variables-input.html">
+<link rel="import" href="input-save.html">
+<!--
+`<pair-production>` I'm hoping this will be a good way to think about the way your code a element and then give you:
+
+ * Template editor ✔
+ 
+ * auto add dependencies (if in open-elements.org or in 'localstorage'). ✔
+ 
+ * Markdown editor for documentation ✔
+ 
+ * a working demo ✔
+ 
+ * a test ✏'for each input and output
+  * test ```location```
+    * input ```location```: london
+    
+    * output ```hash``` = gcpvj0dup40s
+    
+  * test ```hash```
+    * input ```location```: tr18
+    
+    * output ```hash``` = gbuj1g4pw5b4
+    
+ * a bower.json file ✏/ bower command
+
+
+All help is very much appreciated. I hope this project helps people get started with polymer. And it is also a big thank you to the polymer team for all the help.
+@demo demo.html run it 
+@hero hero.svg
+-->
+<dom-module id="pair-production">
+  <template>
+    <div class="vertical center-justified layout">
+      <h4>Let me help you conjure a new element:</h4>
+      <input-save path="name" label="Name the new element - like pirate-ninja" value="{{_name}}" pattern="[a-z]+-[a-z\-]*[a-z]+" auto-validate  error-message="Need's to have a '-' between lowercase letters "></input-save>
+      <template is="dom-if" if="{{_name}}">
+        <input-save path="description" markdown textarea value="{{_description}}" label="About it (markdown)"></input-save>
+        <input-save path="template" code textarea value="{{_domTemplate}}" label="{{_cat('<html> of <', _name,'/>')}}"></input-save>
+        Your demo:
+        <!-- <qr-code type-number="34" title="Demo" value="{{_src}}" error-correct-level="H"></qr-code> --> 
+        <template is="dom-if" if="{{_domTemplateDependencies.length}}">
+          <p>Have you included <span>{{_domTemplateDependencies}}</span> ?</p>
+          <p>add:</p>
+          <template is="dom-repeat" items="{{_domTemplateDependencies}}" >
+            <button on-tap="_addDependency">{{item}}</button>
+          </template>
+        </template>
+        <iframe sandbox="allow-scripts allow-same-origin" height="{{demoHeight}}" style="margin:0; width:100%; border:none;" src="{{_src}}"></iframe>
+        <input-save path="demoHeight" type="number" value="{{demoHeight}}" label="Height of demo" ></input-save>
+        <input-save path="dependencies" code label="what are the elements will your element need" value="{{_dependencies}}" pattern="[a-zA-Z\/-]*[a-zA-Z\/\,-]*[a-zA-Z\/-]+" auto-validate  error-message="sorry a ',' separated list "></input-save>
+        <template is="dom-if" if="{{_dependencylist.length}}">
+          <select value="{{docsFor::input}}">
+            <option value="false">show documentation</option>
+            <template is="dom-repeat" items="{{_dependencylist}}" >
+              <option>{{item}}</option>
+            </template>
+          </select>
+          <template is="dom-if" if="{{docsFor}}" >
+            <iframe sandbox="allow-scripts allow-same-origin" height="300" style="margin:0; width:100%; border:none;" src="{{_docsSrc(docsFor,_listOfElements)}}"></iframe>
+          </template>
+        </template>
+        <variables-list-input changed="{{changed}}" functions="{{_functions}}" label="{{_variablesSets}}" path="" name="{{_name}}"></variables-list-input>   
+        <input-save path="functions" code label="Give me list of functions it will need" value="{{_functions}}" pattern="[a-zA-Z]*[a-zA-Z\,]*[a-zA-Z]+" auto-validate  error-message="sorry a ',' separated list "></input-save>
+        <template is="dom-repeat" items="{{_functionList}}" >
+          <function-list-input variable-list="{{_variableList}}" name="{{item}}"></function-list-input>   
+        </template>
+      </template>
+    </div>
+    <iron-ajax auto url="http://open-elements.org/list-of-elements" handle-as="text" last-response="{{_listOfElements}}"></iron-ajax>
+    <input-save label="base url" pattern="^(?:https?://)?(?:[\w]+\.)(?:\.?[\w]{2,})+$" path="base" value="{{_base}}"></input-save>
+    <prism-highlighter></prism-highlighter>
+    your code:
+    <marked-element markdown="{{_markdown}}"></marked-element>
+    your Docs are going here:<br />
+    your Link to Share are going here:<br />
+    your other localy save elements are going to be available for your demo and listed here:
+    <input-save textarea path="moreHTML" value="{{_moreHTML}}"></input-save>
+  </template>
+</dom-module>
+<script>
+(function () {
+  var at = 0;
+  var tabs = function(n) {
+    var output = "";
+   
+    if (+n < 0) { at += n; }
+    for (var i = 0; i < at; ++i) {
+      output += "  ";
+    }
+    if (+n > 0) { at += n; }
+    return output;
+  };
+  
+  var addLine = function(nl){
+    return nl.join('\n');
+  };
+  
+  var toCamelCase = function(str){
+    if (typeof str === 'string') {
+      return str.replace(/  |-|_/g,' ').replace(/, /g,',').replace(/ \S/g, function(txt){return txt.toUpperCase()[1]});
+    } else {
+      return false;
+    }
+  };
+  var getfile = function(dependency,listOfElements) {
+    var re = /bower_components/gi;
+    var elements = listOfElements.split('\n');
+    for (var i = 0; i < elements.length; ++i) {
+      if (elements[i].indexOf("/" + dependency + ".html") !== -1) {
+        return listOfElements.split('\n')[i].replace(re, '..');
+      }
+    }
+    return false;
+  };
+  
+  Polymer({
+    is: 'pair-production',
+    properties:{
+      _variablesSets: {type: String, value: "Inputs,Outputs,Internal"},
+      _base: {type: String, value: "http://open-elements.org/bower_components/new/"},
+      _name: {type: String, value: ""},
+      _description: {type: String, value: ""},
+      _domTemplate: {type:String, value:"<style>:host {display:inline-block;}</style>\n<h2>Demo</h2>"},
+      _functions: String,
+      _functionList: {computed: "_getArray(_functions)"},
+      _dependencies:{type:String, value: "polymer"},
+      _domTemplateDependencies:{computed:"_getDomTemplateDependencies(_domTemplate,_dependencies)"},
+      _dependencylist: {computed: "_getArray(_dependencies)"},
+      _demo: {computed: "_getCode(_head,_body)"},
+      _iframeDemo: {computed: "_getCode(_iframeHead,_body)"},
+      _head: {computed: "_getHead(_name)"},
+      _iframeHead: {computed: "_getIframeHead(_base,_name)"},
+      _body: {computed: "_getBody(_name)"},
+      _listOfElements:{type:String, value: "../polymer/polymer.html"},
+      _element: {
+        computed: "_getElementCode(_name, _description, _dependencylist, _domTemplate, _variablesSets, changed, _listOfElements)"
+      },
+      _descriptor: {computed: "_getDescriptor(_element)"},
+      _tests :{computed: "_getTests(_name)"},
+      _markdown: {computed: "_getMarkdown(_demo,_element,_name,_bower,_tests)"},
+      _codeiframe: {computed: "_getCodeiframe(_iframeDemo,_element)"},
+      _bower: {computed: "_getBower(_name, _dependencylist)"},
+       _src: {computed: "_getSrc(_codeiframe)"},
+      demoHeight: {value:400},
+      changed: {type:Boolean,notify:true,value:false}
+    },
+    _getBower: function(name, dependencylist) { //TODO read and list dependencylist
+      return addLine([tabs(1)+'{',
+        tabs()+'"name": "'+name+'",',
+        tabs()+'"version": "1.0.0",',
+        tabs()+'"description": "'+name+'",',
+        tabs()+'"main": "'+name+'.html",',
+        tabs(1)+'"keywords": [',
+        tabs()+'"polymer","web-components"',
+        tabs(-1)+'],',
+        tabs(1)+'"dependencies": {',
+        tabs()+'"polymer/polymer": "*"',
+        tabs(-1)+'}',
+        tabs(-1)+'}']);
+      },
+      _cat: function(a,b,c) {
+        return a+b+c;
+      },
+      _getArray: function(s) {
+        if (s !== "") {
+          return s.split(',');
+        }
+      },
+      _getCode: function(head,body) {
+        at = 0;
+        var output = [
+          tabs() + '<!doctype html>',
+          tabs(1) + '<html>'
+        ];        
+        for (var i = 0; i < head.length; ++i) {
+          output.push(tabs() +head[i]);
+        }
+        for (var i = 0; i < body.length; ++i) {
+          output.push(tabs() +body[i]);
+        }
+        output.push(tabs(-1) + '</html>');
+        return addLine(output);
+      },
+      _getHead: function(name) {
+        var output = [
+          tabs(1) + '<head>',
+          tabs()+'<title>'+name+' demo</title>',
+          tabs()+'<sc'+'ript src="../webcomponentsjs/webcomponents-lite.js"></sc'+'ript>',
+          tabs()+'<link rel="import" href="'+name+'.html">',
+          tabs(-1) + '</head>'
+        ];
+        if (name !== "") return output ;
+      },
+      _getIframeHead: function(base,name) {
+        var output = [
+          tabs(1) + '<head>',
+          '<base href="'+base+'">',
+          tabs()+'<title>'+name+' demo</title>',
+          //tabs()+'<sc'+'ript src="../webcomponentsjs/webcomponents-lite.js"></sc'+'ript>',
+          tabs(-1) + '</head>'
+        ];
+        if (name !== "") return output ;
+      },      
+      _getTests: function(name) {
+var testStub = addLine([
+tabs()+'<!doctype html>',
+tabs(1)+'<html>',
+  tabs(1)+'<head>',
+    tabs()+'<meta charset="utf-8">',
+    tabs()+'<scr'+'ipt src="../../webcomponentsjs/webcomponents-lite.js"></scr'+'ipt>',
+    tabs()+'<scri'+'pt src="../../web-component-tester/browser.js"></scr'+'ipt>',
+  tabs(-1)+'</head>',
+  tabs(1)+'<body>',
+    tabs(1)+'<scr'+'ipt>',
+      tabs(1)+'WCT.loadSuites([',
+        tabs()+'\''+name+'.html\'',
+      tabs(-1)+']);',
+    tabs(-1)+'</scr'+'ipt>',
+  tabs(-1)+'</body>',
+tabs(-1)+'</html>',
+tabs()+'## /test/'+name+'.html',
+tabs()+'<!doctype html>',
+tabs(1)+'<html>',
+ tabs(1)+'<head>',
+    tabs()+'<title>'+name+'</title>',
+    tabs()+'<sc'+'ript src="../../webcomponentsjs/webcomponents.js"></scr'+'ipt>',
+    tabs()+'<scr'+'ipt src="../../web-component-tester/browser.js"></sc'+'ript>',
+    tabs()+'<scr'+'ipt src="../../test-fixture/test-fixture-mocha.js"></scr'+'ipt>',
+    tabs()+'<link rel="import" href="../../polymer/polymer.html">',,
+    tabs()+'<link rel="import" href="../../test-fixture/test-fixture.html">',
+    tabs()+'<link rel="import" href="../'+name+'.html">',
+  tabs(-1)+'</head>',
+  tabs(1)+'<body>',
+    tabs(1)+'<test-fixture id="'+toCamelCase(name)+'">',,
+      tabs(1)+'<template>',
+        tabs()+'<'+name+'></'+name+'>',
+      tabs(-1)+'</template>',
+    tabs(-1)+'</test-fixture>',
+    tabs(1)+'<scr'+'ipt>',
+      tabs(1)+'suite(\'<'+name+'>\', function () {',
+        tabs()+'var '+toCamelCase(name)+';',
+        tabs()+''+toCamelCase(name)+' = fixture(\''+toCamelCase(name)+'\');',
+        tabs(1)+'setup(function () {',
+        tabs(-1)+'});',
+        tabs(1)+'teardown(function () {',
+          tabs()+'//...',
+        tabs(-1)+'});',
+        tabs(1)+'suite(\'basic usage\', function () {',
+          tabs(1)+'test(\'can be triggered with space\', function(done) {',
+            tabs(1)+''+toCamelCase(name)+'.addEventListener(\'keydown\', function() {',
+              tabs()+'done();',
+            tabs(-1)+'});',
+          tabs(-1)+'});',
+          tabs(1)+'test(\'can be clicked\', function(done) {',
+            tabs(1)+''+toCamelCase(name)+'.addEventListener(\'click\', function() {',
+              tabs()+'done();',
+            tabs(-1)+'});',
+          tabs(-1)+'});',
+        tabs(-1)+'});',
+      tabs(-1)+'});',
+    tabs(-1)+'</scr'+'ipt>',
+  tabs(-1)+'</body>',
+tabs(-1)+'</html>']);
+        
+        if (name !== "") return testStub;
+      },
+      _getBody: function(name) {
+        var output = [
+          tabs(1)+ '<body>',
+          tabs()+ '<h3>' + name + ' Demo</h3>',
+          tabs()+ '<' + name + '></' + name + '>',
+          tabs(-1)+ '</body>'
+        ];
+        
+        if (name !== "") return output;
+      },
+      _getElementCode: function(name, description, dependencylist, domTemplate, variablesSets, changed, listOfElements) {
+        var output = [];
+        
+        output.push(tabs()+ '<!--');
+        output.push(tabs()+ '`<'+name+'>` ' + description);
+        output.push(tabs()+ '@demo demo.html');
+        output.push(tabs()+ '-->','');
+        output.push(tabs(1)+ '<dom-module id="'+name+'">');
+        output.push(tabs(1)+ '<template>');
+        for (var i = 0; i < domTemplate.split('\n').length; ++i) {
+          output.push(tabs()+domTemplate.split('\n')[i] );
+        }
+        output.push(tabs(-1)+ '</template>');
+        output.push(tabs(-1)+ '</dom-module>');
+        output.push(tabs(1)+ '<sc'+'ript>');
+        output.push(tabs(1)+ 'Polymer({');
+        //if (variableList.length > 0 && variableList[0] !== "") {
+        //  output.push(tabs()+ 'is: "'+name+'",');
+        //  output.push(tabs(1) + 'properties: {');
+        var variableList = []; 
+          //  make variableList
+        for (var i = 0; i < variablesSets.split(',').length; ++i) {
+          var set = variablesSets.split(',')[i];
+          if (js_data !== undefined || js_data !== null){
+            if (js_data.hasOwnProperty("variables."+set)){
+              var varsList = toCamelCase(js_data["variables."+set])
+              if (varsList) {
+                varsList = varsList.split(',');
+                console.log("_getElementCode 187 ",varsList);
+                if (varsList.length > 0){
+                  for (var n = 0; n < varsList.length; ++n) {
+                    variableList.push({
+                      name:varsList[n],
+                      type:"",
+                      value:"",
+                      notify:"",
+                      readOnly:"",
+                      reflectToAttribute:"",
+                      observer:"",
+                      readOnly:""
+                    });
+                  }
+                }
+              }
+            }
+          }       
+        } 
+            
+        console.log("_getElementCode 198 ",variableList);
+
+        output.push(tabs()+ 'is: "'+name+'"')
+        output.push(tabs(-1) + '});');
+        output.push(tabs(-1) + '</sc'+'ript>');
+       
+        for (var i = 0; i < dependencylist.length; ++i) {
+          output.unshift(tabs(0) + '<link rel="import" href="'+getfile(dependencylist[i],listOfElements)+'">');
+        }
+        return addLine(output); 
+      },
+      _getDescriptor: function(element) {
+      //  console.log("_getDescriptor(",element,demo)
+        return {
+        }
+      },
+      _getMarkdown: function(demo, element, name, bower, tests) {
+        return 'demo.html\n\n ```html \n'+demo+'\n```\n' + name + '.html\n\n```html \n'+element+'\n``` \nbower.json\n ```\n'+bower+'\n``` \ntest/index.html\n ```\n'+tests+'\n```';
+      },
+      _getCodeiframe: function(iframeDemo,element) {
+        return iframeDemo+element;
+      },
+      _getSrc: function(codeiframe){
+        return 'data:text/html;charset=utf-8,' + encodeURIComponent(codeiframe);
+      },
+      _docsSrc: function(docsFor,listOfElements) {
+         return 'data:text/html;charset=utf-8,' + encodeURIComponent(
+          '<base href="http://open-elements.org/bower_components/new/">'+
+          '<link rel="import" href="../iron-component-page/iron-component-page.html">'+
+          '<iron-component-page base="http://open-elements.org/bower_components/'+docsFor+'/" src="'+getfile(docsFor,listOfElements)+'"></iron-component-page>">'
+         );
+      },
+      _getDomTemplateDependencies: function(domTemplate,dependencies) {
+        var re = /(?:<\/)([a-z]*[\-a-z]*-[a-z]*)(?:>)/gi; 
+        var output = [];
+        var m;
+ 
+        while ((m = re.exec(domTemplate)) !== null) {
+          if (dependencies.split(',').indexOf(m[1]) === -1) {
+            dependencies = dependencies + "," + m[1]
+            output.push(m[1]);
+          }
+        }
+        
+        return output;
+      },
+      _addDependency: function(e) {
+        if (this._dependencies !== "") {
+          this._dependencies = this._dependencies +","+ e.target.textContent;
+        } else {
+          this._dependencies = e.target.textContent;
+        }
+      }
+    });
+  })();
+</script>

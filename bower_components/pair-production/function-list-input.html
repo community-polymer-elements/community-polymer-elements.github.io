@@ -1,0 +1,27 @@
+<dom-module is="function-list-input">
+  <template>
+    <label>{{cat('Give me list of variables for ',name,'')}}</label>
+    <select multiple value="{{value::index}}">
+      <template is="dom-repeat" items="{{variableList}}">
+        <option value="[[item]]">[[item]]</option>
+      </template>
+    </select>
+    <input-save path="{{cat('function.',name,'.returns.about')}}" label="{{cat('What does ',name,' return?')}}" value="{{returns}}"></input-save>
+    <type-selection path="{{cat('function.',name,'.returns.type')}}" item="{{name}}"></type-selection>
+  </template>
+</dom-module>
+<script>
+  (function () {
+    Polymer({
+      is: 'function-list-input',
+      properties:{
+        name: String,
+        description : String,
+        variableList : Array
+      },
+      cat: function(a,b,c) {
+        return a+b+c;
+      }
+    });
+  })();  
+</script>

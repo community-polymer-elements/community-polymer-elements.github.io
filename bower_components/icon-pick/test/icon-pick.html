@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <title>icon-pick</title>
+    <script src="../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../test-fixture/test-fixture-mocha.js"></script>
+    <link rel="import" href="../../polymer/polymer.html">
+
+    <link rel="import" href="../../test-fixture/test-fixture.html">
+    <link rel="import" href="../icon-pick.html">
+  </head>
+  <body>
+    <test-fixture id="iconPick">
+
+      <template>
+        <icon-pick></icon-pick>
+      </template>
+    </test-fixture>
+    <script>
+      suite('<icon-pick>', function () {
+        var iconPick;
+        iconPick = fixture('iconPick');
+        setup(function () {
+        });
+        teardown(function () {
+          //...
+        });
+        suite('basic usage', function () {
+          test('can be triggered with space', function(done) {
+            iconPick.addEventListener('keydown', function() {
+              done();
+            });
+            MockInteractions.pressSpace(iconPick);
+          });
+          test('can be clicked', function(done) {
+            iconPick.addEventListener('click', function() {
+              done();
+            });
+            MockInteractions.tap(iconPick);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
