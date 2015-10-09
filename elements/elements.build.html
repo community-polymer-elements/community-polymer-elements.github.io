@@ -732,25 +732,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <cart-icon></cart-icon>
       </paper-toolbar>
 
-      <div class="content fit">
+    <div class="content fit">
         <div class="packages layout horizontal wrap">
+          <hr style="color: black; width: 100%;" themed-reverse="">
+          <h2 style="color: white;">Community Elements</h2>
+          <hr style="color: black; width: 100%;" themed-reverse="">
           <template is="dom-repeat" items="[[packages]]">
-            <template is="dom-if" if="{{_isMol(item.name)}}">
-              <h2 style="color: white;">Community Elements</h2>
-              <hr style="color: black; width: 100%;" themed-reverse="">
+            <template is="dom-if" if="{{_isCustom(item.custom)}}">
+              <a href$="[[_packageLink(item.name)]]" is="app-link" class="package flex-none"><package-tile name$="[[item.name]]"></package-tile></a>
             </template>
-            <a href$="[[_packageLink(item.name)]]" is="app-link" class="package flex-none"><package-tile name$="[[item.name]]"></package-tile></a>
-            <template is="dom-if" if="{{_isMol(item.name)}}">
-              <hr style="color: black; width: 100%;" themed-reverse="">
-              <h2 style="color: white;">Official Google Polymer Elements</h2>
-              <hr style="color: black; width: 100%;" themed-reverse="">
-            </template>
-                      </template>
+          </template>
         </div>
 
         <div class="packages layout horizontal wrap">
           <hr style="color: black; width: 100%;" themed-reverse="">
-          <h3 class="color:white;">Useful Links</h3>
+          <h2 style="color: white;">Official Google Polymer Elements</h2>
+          <hr style="color: black; width: 100%;" themed-reverse="">
+          <template is="dom-repeat" items="[[packages]]">
+            <template is="dom-if" if="{{_isCustomOff(item.custom)}}">
+              <a href$="[[_packageLink(item.name)]]" is="app-link" class="package flex-none"><package-tile name$="[[item.name]]"></package-tile></a>
+            </template>
+          </template>
+        </div>
+
+        <div class="packages layout horizontal wrap">
+          <hr style="color: black; width: 100%;" themed-reverse="">
+          <h3 style="color:white;">Useful Links</h3>
           <hr style="color: black; width: 100%;" themed-reverse="">
           <a href="https://www.materialpalette.com/" class="package flex-none"><package-tile package="{ &quot;version&quot;: &quot;material&quot;, &quot;symbol&quot;: &quot;Mp&quot;, &quot;title&quot;: &quot;Material Palette&quot;, &quot;tagline&quot;: &quot;Color Picker&quot;, &quot;color&quot;: &quot;#FFECB3&quot; }"></package-tile></a>
 
@@ -760,13 +767,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a class="package flex-none" href="https://customelements.io/">
             <package-tile package="{ &quot;version&quot;: &quot;components&quot;, &quot;symbol&quot;: &quot;Ci&quot;, &quot;title&quot;: &quot;Customelements.io&quot;, &quot;tagline&quot;: &quot;Custom Web-Components catalog&quot;, &quot;color&quot;: &quot;#FF9800&quot; }"></package-tile>
           </a>
-
-
-
           <hr style="color: black; width: 100%;" themed-reverse="">
         </div>
 
-                <div id="guides-container">
+
+        <div id="guides-container">
           <h3>Element Guides</h3>
           <div id="guide-list" class="horizontal layout wrap">
             <template is="dom-repeat" items="[[guides]]">
